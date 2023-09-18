@@ -60,23 +60,24 @@ trigger TrainingTrigger on Training__c (after insert, before insert, before upda
             restaurantIds.add(training.Restaurant__c);
         }
 
-        Map<Id, Restaurant__c> restaurantIdToRecord = Map<Id, Restaurant__c>([
+        Map<Id, Restaurant__c> restaurantIdToRecord = new Map<Id, Restaurant__c>([
             SELECT Id, Comission_Rate__c, Average_Meal_Cost__c
             FROM Restaurant__c
             WHERE Id IN :restaurantIds
         ]);
 
-        RestaurantCommissionMetadata__mtd commissionMetadata = [
+        RestaurantCommissionMetadata__mdt commissionMetadata = [
             SELECT ProbabilityToBuyPerParticipant__c
-            FROM RestaurantCommissionMetadata__mtd
+            FROM RestaurantCommissionMetadata__mdt  
             LIMIT 1
         ];
 
         for(Training__c training : Trigger.New){
             Restaurant__c restaurant = restaurantIdToRecord.get(training.Restaurant__c);
-            training.Forecase__c = restaurant.Comission_Rate__c * 
-                                   restaurant.Average_Meal_Cost__c * 
-                                   commissionMetadata.ProbabilityToBuyPerParticipant__c;
+            training.Restaurant_Commission_Forecast__c = training.Number_of_Participants__c * training.Training_Length__c * 
+                                                         restaurant.Comission_Rate__c * commissionMetadata.ProbabilityToBuyPerParticipant__c *
+                                                         restaurant.Average_Meal_Cost__c;
+                                   
         }       
     }
 }
