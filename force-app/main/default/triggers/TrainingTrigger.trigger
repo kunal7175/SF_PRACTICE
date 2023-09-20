@@ -4,8 +4,6 @@ trigger TrainingTrigger on Training__c (after insert, before insert, before upda
     List<String> trainingNames=new List<String>();
 
     if(Trigger.isUpdate && Trigger.isBefore) {
-        
-
         for(Training__c newTraining : Trigger.New) {
             Training__c oldTraining = Trigger.oldMap.get(newTraining.Id);
 
@@ -16,39 +14,35 @@ trigger TrainingTrigger on Training__c (after insert, before insert, before upda
         }
 
         List<Training__c> completedTrainingParticipants = [
-                Select Name, Id, Status__c, (Select Name, Status__c, Id from Participants__r)
-                FROM Training__c
-                Where Id IN :completedTrainingIds
-                ];
+            SELECT Name, Id, Status__c, (SEELCT Name, Status__c, Id FROM Participants__r)
+            FROM Training__c
+            WHERE Id IN :completedTrainingIds
+        ];
 
-            for(Training__c training : completedTrainingParticipants ) {
-                List<Participant__c> participants = training.Participants__r;
-                for(Participant__c part : participants){
-                    part.Status__c = 'Participated';
-
-                }
+        for(Training__c training : completedTrainingParticipants ) {
+            List<Participant__c> participants = training.Participants__r;
+            for(Participant__c part : participants){
+                part.Status__c = 'Participated';
             }
-        
+        }
     }
 
     if(Trigger.isInsert && Trigger.isAfter) {
         List<Task> tasks = new List<Task>();
         
         for(Training__c training : Trigger.New) {
-
-            Task task=new Task();
-            task.ActivityDate=System.today();
-            task.Status='Not Started';
-            task.Priority='Normal';
-            task.Description='This task is just a reminder that a new course is about to start.';
-            task.Subject='Reminder '+ training.Name;
-            task.WhoId=training.Trainer_Contact__c;
-            task.WhatId=training.id;
+            Task task = new Task();
+            task.ActivityDate = System.today();
+            task.Status = 'Not Started';
+            task.Priority = 'Normal';
+            task.Description = 'This task is just a reminder that a new course is about to start.';
+            task.Subject = 'Reminder '+ training.Name;
+            task.WhoId = training.Trainer_Contact__c;
+            task.WhatId = training.id;
             tasks.add(task);
-
         }
 
-        if(tasks.size()>0){
+        if(!tasks.isEmpty()){
             insert tasks;
         }
     }
