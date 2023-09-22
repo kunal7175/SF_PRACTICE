@@ -1,5 +1,5 @@
 @isTest
-private class Training_test {
+private class TrainingTrigger_test {
 
 @isTest
     static void test_method_Task_01(){
@@ -25,8 +25,8 @@ private class Training_test {
         Training__c training2 = new Training__c();
         training2.name = 'SF test Class 2';
         training2.Restaurant__c = restaurants[1].id;
-        training2.Start_Date__c = Date.newinstance(2023, 09, 11);
-        training2.End_Date__c = Date.newInstance(2023,09,23);
+        training2.Start_Date__c = Date.today();
+        training2.End_Date__c = Date.today().addDays(12);
         training2.Number_of_Participants__c = 50;
         trainings.add(training);
         trainings.add(training2);
