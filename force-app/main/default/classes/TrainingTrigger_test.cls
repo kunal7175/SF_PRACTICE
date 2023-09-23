@@ -31,7 +31,7 @@ private class TrainingTrigger_test {
         trainings.add(training);
         trainings.add(training2);
         Test.startTest();
-        Database.insert(trainings,false);
+        insert trainings;
         Test.stopTest();
         List<Task> task = [Select Id, Subject from Task];
         System.assertEquals(2, task.size());
@@ -68,7 +68,7 @@ private class TrainingTrigger_test {
         trainings.add(training);
         trainings.add(training2);
         Test.startTest();
-        Database.insert(trainings,false);
+        insert trainings;
         Test.stopTest();
         List<Training__c> insertedTrainings = [Select Id, Name, Restaurant_Commission_Forecast__c From Training__c ];
         System.assertEquals(4000, insertedTrainings[0].Restaurant_Commission_Forecast__c);
