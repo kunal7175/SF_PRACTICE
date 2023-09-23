@@ -18,13 +18,13 @@ private class TrainingTrigger_test {
         insert restaurants;
         Training__c training = new Training__c();   
         training.name = 'SF test Class';
-        training.Restaurant__c = restaurants[0].id;
+        training.Restaurant__c = restaurants.get(0).id;
         training.Start_Date__c = Date.newinstance(2023, 09, 13);
         training.End_Date__c = Date.newInstance(2023,09,18);
         training.Number_of_Participants__c = 10;
         Training__c training2 = new Training__c();
         training2.name = 'SF test Class 2';
-        training2.Restaurant__c = restaurants[1].id;
+        training2.Restaurant__c = restaurants.get(1).id;
         training2.Start_Date__c = Date.today();
         training2.End_Date__c = Date.today().addDays(12);
         training2.Number_of_Participants__c = 50;
