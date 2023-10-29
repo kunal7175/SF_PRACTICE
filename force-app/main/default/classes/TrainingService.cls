@@ -74,7 +74,14 @@ public with sharing class TrainingService {
             if(training.Number_of_Participants__c==0){
                 training.Number_of_Participants__c=1;
             }
+
+            
             Restaurant__c restaurant = restaurantIdToRecord.get(training.Restaurant__c);
+            if(restaurant == null){
+                training.Restaurant_Commission_Forecast__c = 0;
+                continue;
+            }
+            
             training.Restaurant_Commission_Forecast__c = training.Number_of_Participants__c * training.Training_Length__c * 
                                                          restaurant.Comission_Rate__c * commissionMetadata.ProbabilityToBuyPerParticipant__c *
                                                          restaurant.Average_Meal_Cost__c;
