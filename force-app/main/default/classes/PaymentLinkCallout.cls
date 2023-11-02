@@ -1,7 +1,31 @@
-`public with sharing class PaymentLinkCallout {
+public with sharing class PaymentLinkCallout {
 
-    @Future(callout=true)
-    public static void requestPaymentLink(Set<Id> participantIds){
+    public static final String URL = 'https://735ef563-176d-431c-85ce-2cc07056ef03.mock.pstmn.io/payments/link';
+    public static final String GET_METHOD = 'GET';
+
+    public static String requestPaymentLink(Participant__c participant) {
+        Http http = new Http();
+
+        HttpRequest request = new HttpRequest();
+        request.setEndpoint(URL);
+        request.setMethod(GET_METHOD);
+        HttpResponse response = http.send(request);
+
+        String paymentLink = parseLinkFromJSON(response.getBody());
+        
+        return paymentLink;
+    }
+
+    private static String parseLinkFromJSON(String jsonBody) {
+        Map<String, Object> results = (Map<String, Object>) JSON.deserializeUntyped(jsonBody);
+        Map<String, Object> payer = (Map<String, Object>) results.get('payer');
+
+        String paymentLink = (String) payer.get('link');
+        return paymentLink;
+    }
+
+    /*
+    public static HttpResponse requestPaymentLink(Set<Id> participantIds){
 
         List<Participant__c> participants = [
             SELECT Id, Name, Contact_Name__r.Name, Contact_Name__r.Email, PaymentLink__c
@@ -10,13 +34,14 @@
         ];
 
         List<Participant__c> updatedParticipants = new List<Participant__c>();
+        HttpResponse response;
 
         for(Participant__c participant : participants){
             Http http = new Http();
             HttpRequest request = new HttpRequest();
             request.setEndpoint('https://735ef563-176d-431c-85ce-2cc07056ef03.mock.pstmn.io/payments/link');
             request.setMethod('GET');
-            HttpResponse response = http.send(request);
+            response = http.send(request);
             Map<String, Object> results = (Map<String, Object>) JSON.deserializeUntyped(response.getBody());
             Map<String, Object> payer = (Map<String, Object>) results.get('payer');
             String paymentLink= (String) payer.get('link');
@@ -25,8 +50,9 @@
         }
 
         update updatedParticipants;
-        sendPaymentEmail(updatedParticipants);
-    }
+        //sendPaymentEmail(updatedParticipants);
+        return response;
+    } 
 
     public static void sendPaymentEmail(List<Participant__c> participants){
         List<Messaging.SingleEmailMessage> mails = new List<Messaging.SingleEmailMessage>();
@@ -47,6 +73,6 @@
             Messaging.sendEmail(mails);
         }
 
-    }
+    }*/
 }
     
