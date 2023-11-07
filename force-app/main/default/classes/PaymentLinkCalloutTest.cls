@@ -107,7 +107,7 @@ private class PaymentLinkCalloutTest{
         Test.startTest();
         String paymentLink = PaymentLinkCallout.requestPaymentLink(participant);
         Test.stopTest();
-
+        
         Assert.areEqual(PaymentLinkCalloutMock.LINK, paymentLink);
     }
 

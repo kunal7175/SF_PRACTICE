@@ -25,8 +25,7 @@ public with sharing class RegistrationConfirmationQueueable implements Queueable
         List<Messaging.SingleEmailMessage> mails = new List<Messaging.SingleEmailMessage>();
 
         for(Participant__c participant : participants ){
-            System.debug('Sending email to: ' + participant.Contact_Name__r.Email);
-            
+                
             Messaging.SingleEmailMessage email = new Messaging.SingleEmailMessage();
             email.setSubject('Course Enrollment Confirmation');
             email.setToAddresses(new List<String> {participant.Contact_Name__r.Email});
