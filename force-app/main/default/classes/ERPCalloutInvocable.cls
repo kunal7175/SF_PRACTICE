@@ -4,13 +4,11 @@ public with sharing class ERPCalloutInvocable {
   
     @InvocableMethod(label = 'Get ERP Id')
     public static List<String> sendToERP(List<Id> participantId){
-
-        List<String> foundERPId = new List<String>();
-
         Participant__c participant = [
             SELECT Id, Name, Status__c
             FROM Participant__c
-            WHERE Id = :participantId
+            WHERE Id IN :participantId
+            LIMIT 1
         ];
         
         if(participant == null){
@@ -18,9 +16,6 @@ public with sharing class ERPCalloutInvocable {
         }
 
        String ERPId = ERPCallout.sendToERP(participant);
-       foundERPId.add(ERPId);
-       return foundERPId;
-
-
-}
+       return new List<String>() {ERPId};
+    }
 }

@@ -14,7 +14,7 @@ public with sharing class ERPCallout {
         request.setHeader('Content-Type', 'application/json;charset=UTF-8');
         String JSONBODY = JSON.serialize(participant);
         request.setBody(JSONBODY);
-        HttpResponse response = http.send(request);
+        HttpResponse response = http.send(request); // try catch
         System.debug(response.getBody());
 
         if(response == null){

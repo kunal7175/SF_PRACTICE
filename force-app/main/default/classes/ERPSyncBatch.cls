@@ -15,15 +15,19 @@ public with sharing class ERPSyncBatch implements Database.Batchable<sObject>, D
 
         for(Participant__c participant : participants){
 
-            String ERPId = ERPCallout.sendToERP(participant);
+            String ERPId = ''; 
+            
+            try {
+                ERPId = ERPCallout.sendToERP(participant);
+            } catch(Exception e) {
+                
+            }
             participant.erpId__c = ERPId;
             participantsWithERPId.add(participant);
             recordsProcessed++;
         }
         
-        update participantsWithERPId;  
-        
-        
+        update participantsWithERPId;
     }
     public void finish(Database.BatchableContext bc){
         
