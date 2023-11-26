@@ -1,4 +1,4 @@
-@RestResource(urlMapping='/Training__c/*')
+@RestResource(urlMapping='/ /*')
 global with sharing class TrainingRestService {
 
     @HttpGet
@@ -18,7 +18,12 @@ global with sharing class TrainingRestService {
     }
 
     @HttpPost
-    global static ID createTraining(String name, String status, String startDate, String endDate, String numberOfParticipants){
+    global static ID createTraining(
+        String name, 
+        String status, 
+        String startDate, 
+        String endDate, 
+        String numberOfParticipants){
 
       Training__c training = new Training__c();
 
