@@ -33,7 +33,7 @@ global with sharing class InvoiceRestService {
          ];
 
          sendEmailToStudent(participant, invoice.payment_link__c);
-        
+
          }
 
          if(invoiceWrapper.status == 'Paid'){
@@ -46,11 +46,11 @@ global with sharing class InvoiceRestService {
 
             invoice = foundInvoice;
             invoice.Status__c = invoiceWrapper.status;
-
+            invoice.Payment_Date__c = Date.today();
          }
 
          upsert invoice;
-
+         
          } 
 
     public static void sendEmailToStudent(Participant__c participant, String payment_link){
