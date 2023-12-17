@@ -38,7 +38,7 @@ global with sharing class InvoiceRestService {
 
          if(invoiceWrapper.status == 'Paid'){
             Invoice__c foundInvoice = [
-                SELECT Id, Status__c, invoice_id__c
+                SELECT Id, Status__c, invoice_id__c, Participant__c
                 FROM Invoice__c
                 WHERE invoice_id__c = :invoiceWrapper.invoice_id
                 LIMIT 1
@@ -47,6 +47,27 @@ global with sharing class InvoiceRestService {
             invoice = foundInvoice;
             invoice.Status__c = invoiceWrapper.status;
             invoice.Payment_Date__c = Date.today();
+
+            Participant__c foundParticipant = [
+                SELECT Id, Status__c
+                FROM Participant__c
+                WHERE Id = :foundInvoice.Participant__c
+            ];
+
+            foundParticipant.Status__c = 'Active';
+            update foundParticipant;
+         }
+
+         if(invoiceWrapper.status == 'Failed'){
+            Invoice__c foundInvoice = [
+                SELECT Id, Status__c, invoice_id__c, Participant__c
+                FROM Invoice__c
+                WHERE invoice_id__c = :invoiceWrapper.invoice_id
+                LIMIT 1
+            ];
+
+            invoice = foundInvoice;
+            invoice.Status__c = invoiceWrapper.status;
          }
 
          upsert invoice;
