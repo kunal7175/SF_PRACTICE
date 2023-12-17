@@ -5,7 +5,6 @@ global with sharing class InvoiceRestService {
     global static void createInvoiceAndEmail(){
 
         String requestBody = RestContext.request.requestBody.toString();
-        String uri = RestContext.request.requestUri;
         InvoiceWrapper invoiceWrapper = (InvoiceWrapper) JSON.deserialize(
             requestBody, 
             InvoiceWrapper.class
