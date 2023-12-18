@@ -11,7 +11,7 @@ global with sharing class InvoiceRestService {
         );
 
         Invoice__c invoice = new Invoice__c();
-
+        
          if(invoiceWrapper.status == 'Created'){
             invoice.invoice_id__c = invoiceWrapper.invoice_id;
             invoice.Participant__c = invoiceWrapper.participant_id;
@@ -51,7 +51,6 @@ global with sharing class InvoiceRestService {
          } 
 
          private static Participant__c getParticipantById(Id participantId){
-
             Participant__c foundParticipant = [
                 SELECT Id, Status__c, Contact_Name__r.Name, Contact_Name__r.Email, Training__r.Name
                 FROM Participant__c
@@ -62,7 +61,6 @@ global with sharing class InvoiceRestService {
          }
 
          private static Invoice__c getInvoiceById(String invoiceId){
-
             Invoice__c foundInvoice = [
                 SELECT Id, Status__c, invoice_id__c, Participant__c
                 FROM Invoice__c
