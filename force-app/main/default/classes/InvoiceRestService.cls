@@ -26,7 +26,6 @@ global with sharing class InvoiceRestService {
 
             Participant__c foundParticipant = getParticipantById(invoice.Participant__c);
             EmailService.sendPaymentEmailToStudent(foundParticipant, invoice.payment_link__c);
-
          }
 
          if(invoiceWrapper.status == 'Paid'){
@@ -50,7 +49,7 @@ global with sharing class InvoiceRestService {
          }
 
          upsert invoice;
-
+         
          } 
 
          private static Participant__c getParticipantById(Id participantId){
@@ -73,13 +72,8 @@ global with sharing class InvoiceRestService {
                 LIMIT 1
             ];
 
-            return foundInvoice;
-            
-            
+            return foundInvoice;            
          }
-
-   
-
-    
+ 
 }
 
