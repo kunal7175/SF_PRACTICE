@@ -24,75 +24,62 @@ global with sharing class InvoiceRestService {
             invoice.tax__c = invoiceWrapper.tax;
             invoice.token__c = invoiceWrapper.token;
 
-            Participant__c participant = [
-                SELECT Id, Contact_Name__r.Email, Contact_Name__r.Name, Training__r.Name
-                FROM Participant__c
-                WHERE Id = :invoice.Participant__c
-                LIMIT 1
-         ];
-
-         sendEmailToStudent(participant, invoice.payment_link__c);
+            Participant__c foundParticipant = getParticipantById(invoice.Participant__c);
+            EmailService.sendPaymentEmailToStudent(foundParticipant, invoice.payment_link__c);
 
          }
 
          if(invoiceWrapper.status == 'Paid'){
-            Invoice__c foundInvoice = [
-                SELECT Id, Status__c, invoice_id__c, Participant__c
-                FROM Invoice__c
-                WHERE invoice_id__c = :invoiceWrapper.invoice_id
-                LIMIT 1
-            ];
-
+            System.debug('inside paid flow');
+            System.debug(invoiceWrapper.invoice_id);
+            Invoice__c foundInvoice = getInvoiceById(invoiceWrapper.invoice_id);
             invoice = foundInvoice;
             invoice.Status__c = invoiceWrapper.status;
             invoice.Payment_Date__c = Date.today();
-
-            Participant__c foundParticipant = [
-                SELECT Id, Status__c
-                FROM Participant__c
-                WHERE Id = :foundInvoice.Participant__c
-            ];
-
+            Participant__c foundParticipant = getParticipantById(invoice.Participant__c);
             foundParticipant.Status__c = 'Active';
             update foundParticipant;
          }
 
          if(invoiceWrapper.status == 'Failed'){
-            Invoice__c foundInvoice = [
-                SELECT Id, Status__c, invoice_id__c, Participant__c
-                FROM Invoice__c
-                WHERE invoice_id__c = :invoiceWrapper.invoice_id
-                LIMIT 1
-            ];
-
+            Invoice__c foundInvoice = getInvoiceById(invoiceWrapper.invoice_id);
             invoice = foundInvoice;
             invoice.Status__c = invoiceWrapper.status;
+            Participant__c foundParticipant = getParticipantById(foundInvoice.Participant__c);
+            EmailService.paymentFailureEmail(foundParticipant);
          }
 
          upsert invoice;
-         
+
          } 
 
-    public static void sendEmailToStudent(Participant__c participant, String payment_link){
-        List<Messaging.SingleEmailMessage> mails = new List<Messaging.SingleEmailMessage>();
-                
-            Messaging.SingleEmailMessage email = new Messaging.SingleEmailMessage();
-            email.setSubject('Course Enrollment Confirmation');
-            email.setToAddresses(new List<String> {participant.Contact_Name__r.Email});
-            String body = 'Dear '+ participant.Contact_Name__r.Name + ',' + '<br/>';
-            body += 'This email is a confirmation that you are successfully registered for course ' + participant.Training__r.Name;
-            body += '. Please use the following link to pay for the course: ' + payment_link;
-            body += '. We look forward to seeing you in the course!' + '<br/>';
-            body += 'Best regards,'+ '<br/>';
-            body += 'Cloud Prism';
-            email.setHtmlBody(body);
-            mails.add(email);
+         private static Participant__c getParticipantById(Id participantId){
 
-        if(!mails.isEmpty()){
-            Messaging.sendEmail(mails);
-        }
-    }
+            Participant__c foundParticipant = [
+                SELECT Id, Status__c, Contact_Name__r.Name, Contact_Name__r.Email, Training__r.Name
+                FROM Participant__c
+                WHERE Id = :participantId
+            ];
+
+            return foundParticipant;
+         }
+
+         private static Invoice__c getInvoiceById(Id invoiceId){
+
+            Invoice__c foundInvoice = [
+                SELECT Id, Status__c, invoice_id__c, Participant__c
+                FROM Invoice__c
+                WHERE invoice_id__c = :invoiceId
+                LIMIT 1
+            ];
+
+            return foundInvoice;
+            
+            
+         }
+
    
 
+    
 }
 
