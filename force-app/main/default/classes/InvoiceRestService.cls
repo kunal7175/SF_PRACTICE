@@ -61,7 +61,7 @@ global with sharing class InvoiceRestService {
             return foundParticipant;
          }
 
-         private static Invoice__c getInvoiceById(Id invoiceId){
+         private static Invoice__c getInvoiceById(String invoiceId){
 
             Invoice__c foundInvoice = [
                 SELECT Id, Status__c, invoice_id__c, Participant__c
