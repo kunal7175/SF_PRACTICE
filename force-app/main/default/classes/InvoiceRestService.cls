@@ -29,8 +29,6 @@ global with sharing class InvoiceRestService {
          }
 
          if(invoiceWrapper.status == 'Paid'){
-            System.debug('inside paid flow');
-            System.debug(invoiceWrapper.invoice_id);
             Invoice__c foundInvoice = getInvoiceById(invoiceWrapper.invoice_id);
             invoice = foundInvoice;
             invoice.Status__c = invoiceWrapper.status;
@@ -49,7 +47,7 @@ global with sharing class InvoiceRestService {
          }
 
          upsert invoice;
-         
+
          } 
 
          private static Participant__c getParticipantById(Id participantId){
