@@ -27,7 +27,7 @@ public with sharing class EmailService {
         email.setSubject('Payment Failure');
         email.setToAddresses(new List<String> {participant.Contact_Name__r.Email});
         String body = 'Dear '+ participant.Contact_Name__r.Name + ',' + '<br/>';
-        body += 'Check the payment details or try a different payment method' + + '<br/>';
+        body += 'Check the payment details or try a different payment method' + '<br/>';
         body += 'Best regards,'+ '<br/>';
         body += 'Cloud Prism';
         email.setHtmlBody(body);
